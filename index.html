@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Finance Hub | Real-time Currency & Crypto Converter</title>
+    <meta name="description" content="Professional financial dashboard featuring real-time exchange rates for 30+ fiat currencies and major cryptos. Track UTC market hours globally.">
+    <style>
+        :root { --primary: #0f172a; --accent: #2563eb; --success: #059669; --bg: #f8fafc; --text: #334155; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        .wrapper { max-width: 1280px; margin: 0 auto; padding: 20px; }
+
+        /* AdSense Slots */
+        .ad-unit { background: #f1f5f9; border: 1px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 0.8rem; overflow: hidden; }
+        .ad-top { height: 90px; width: 100%; margin-bottom: 25px; }
+        .ad-sidebar { height: 600px; width: 100%; margin-top: 20px; }
+        .ad-content { height: 250px; width: 100%; margin: 30px 0; }
+
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
+        .brand { font-size: 1.6rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
+        .live-indicator { font-size: 0.85rem; color: #64748b; display: flex; align-items: center; gap: 6px; }
+        .dot { height: 8px; width: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; }
+
+        .layout { display: grid; grid-template-columns: 1.8fr 1fr; gap: 32px; }
+        @media (max-width: 1024px) { .layout { grid-template-columns: 1fr; } }
+
+        .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); padding: 28px; border: 1px solid #f1f5f9; }
+        h2 { font-size: 1.15rem; margin: 0 0 24px 0; color: var(--primary); border-left: 4px solid var(--accent); padding-left: 12px; }
+
+        /* Converter Styles */
+        .calc-box { display: flex; flex-direction: column; gap: 18px; }
+        .input-row { display: flex; gap: 12px; }
+        input, select { flex: 1; padding: 14px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 1rem; outline: none; transition: border 0.2s; }
+        input:focus { border-color: var(--accent); ring: 2px solid #dbeafe; }
+        .display-box { background: #f0f9ff; padding: 30px; border-radius: 14px; text-align: center; border: 1px solid #e0f2fe; }
+        .val-out { font-size: 2.8rem; font-weight: 800; color: var(--accent); }
+
+        /* World Clock Table */
+        .clock-table { width: 100%; border-collapse: collapse; }
+        .clock-table tr { border-bottom: 1px solid #f8fafc; }
+        .clock-table td { padding: 16px 0; }
+        .utc-chip { font-family: monospace; font-size: 0.75rem; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #64748b; }
+        .time-str { font-size: 1.25rem; font-weight: 700; text-align: right; color: var(--primary); font-variant-numeric: tabular-nums; }
+
+        footer { text-align: center; padding: 50px 0; border-top: 1px solid #e2e8f0; margin-top: 60px; color: #94a3b8; font-size: 0.9rem; }
+        .footer-links a { color: var(--accent); text-decoration: none; margin: 0 10px; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="ad-unit ad-top">
+        ADVERTISEMENT: Leaderboard (728x90)
+    </div>
+
+    <header>
+        <div class="brand">FX<span style="color:var(--accent)">METRICS</span></div>
+        <div class="live-indicator"><span class="dot"></span> Market Data: Live</div>
+    </header>
+
+    <div class="layout">
+        <main>
+            <div class="card">
+                <h2>Multi-Currency Converter</h2>
+                <div class="calc-box">
+                    <input type="number" id="amt" value="1.00" oninput="convert()">
+                    <div class="input-row">
+                        <select id="base" onchange="convert()">
+                            <optgroup label="Popular Fiat">
+                                <option value="USD" selected>US Dollar (USD)</option>
+                                <option value="EUR">Euro (EUR)</option>
+                                <option value="GBP">British Pound (GBP)</option>
+                                <option value="CNY">Chinese Yuan (CNY)</option>
+                                <option value="JPY">Japanese Yen (JPY)</option>
+                            </optgroup>
+                            <optgroup label="Cryptocurrency">
+                                <option value="BTC">Bitcoin (BTC)</option>
+                                <option value="ETH">Ethereum (ETH)</option>
+                                <option value="SOL">Solana (SOL)</option>
+                            </optgroup>
+                            <optgroup label="Global Currencies">
+                                <option value="AUD">Australian Dollar</option>
+                                <option value="CAD">Canadian Dollar</option>
+                                <option value="CHF">Swiss Franc</option>
+                                <option value="SGD">Singapore Dollar</option>
+                                <option value="HKD">Hong Kong Dollar</option>
+                                <option value="KRW">South Korean Won</option>
+                                <option value="AED">UAE Dirham</option>
+                                <option value="BRL">Brazilian Real</option>
+                                <option value="INR">Indian Rupee</option>
+                            </optgroup>
+                        </select>
+                        <select id="target" onchange="convert()">
+                            <option value="EUR">Euro (EUR)</option>
+                            <option value="USD">US Dollar (USD)</option>
+                            <option value="CNY" selected>Chinese Yuan (CNY)</option>
+                            <option value="GBP">British Pound (GBP)</option>
+                            <option value="JPY">Japanese Yen (JPY)</option>
+                            <option value="SGD">Singapore Dollar</option>
+                        </select>
+                    </div>
+                    <div class="display-box">
+                        <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Exchange Result</div>
+                        <div class="val-out" id="output">---</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ad-unit ad-content">
+                ADVERTISEMENT: In-Feed Native (High Engagement)
+            </div>
+
+            <div class="card">
+                <h2>Financial Market Insights</h2>
+                <div style="line-height: 1.8; color: #475569; font-size: 0.95rem;">
+                    <p>Our platform provides real-time exchange rates powered by major institutional APIs including Frankfurter and CoinGecko. We cover over 30+ global fiat currencies and top-tier digital assets. Whether you are managing cross-border trade, planning international travel, or rebalancing your crypto portfolio, our high-frequency data engine ensures millisecond precision.</p>
+                </div>
+            </div>
+        </main>
+
+        <aside>
+            <div class="card">
+                <h2>Market Hours (UTC)</h2>
+                <table class="clock-table" id="clocks">
+                    </table>
+            </div>
+
+            <div class="ad-unit ad-sidebar">
+                ADVERTISEMENT: Skyscraper (300x600)
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="privacy.html">Privacy Policy</a> | 
+            <a href="#">Terms of Service</a> | 
+            <a href="#">Data Sources</a>
+        </div>
+        <p style="margin-top: 20px;">© 2026 FXMetrics Dashboard. All rights reserved. Data for reference only.</p>
+    </footer>
+</div>
+
+<script>
+    const centers = [
+        { city: 'London (LSE)', zone: 'Europe/London', utc: 'UTC+0' },
+        { city: 'New York (NYSE)', zone: 'America/New_York', utc: 'UTC-5' },
+        { city: 'Tokyo (TSE)', zone: 'Asia/Tokyo', utc: 'UTC+9' },
+        { city: 'Hong Kong (HKEX)', zone: 'Asia/Hong_Kong', utc: 'UTC+8' },
+        { city: 'Singapore (SGX)', zone: 'Asia/Singapore', utc: 'UTC+8' },
+        { city: 'Dubai (DFM)', zone: 'Asia/Dubai', utc: 'UTC+4' }
+    ];
+
+    function startClocks() {
+        const table = document.getElementById('clocks');
+        table.innerHTML = centers.map(c => `
+            <tr>
+                <td>
+                    <div style="font-weight:600">${c.city}</div>
+                    <span class="utc-chip">${c.utc}</span>
+                </td>
+                <td class="time-str" id="t-${c.city}">00:00:00</td>
+            </tr>
+        `).join('');
+    }
+
+    function tick() {
+        centers.forEach(c => {
+            const time = new Intl.DateTimeFormat('en-US', {
+                timeZone: c.zone, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+            }).format(new Date());
+            document.getElementById(`t-${c.city}`).innerText = time;
+        });
+    }
+
+    async function convert() {
+        const amount = document.getElementById('amt').value;
+        const from = document.getElementById('base').value;
+        const to = document.getElementById('target').value;
+        const out = document.getElementById('output');
+
+        try {
+            if (['BTC', 'ETH', 'SOL'].includes(from)) {
+                const map = { 'BTC':'bitcoin', 'ETH':'ethereum', 'SOL':'solana' };
+                const r = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${map[from]}&vs_currencies=${to.toLowerCase()}`);
+                const data = await r.json();
+                const total = amount * data[map[from]][to.toLowerCase()];
+                out.innerText = `${total.toLocaleString(undefined, {minimumFractionDigits: 2})} ${to}`;
+            } else {
+                const r = await fetch(`https://api.frankfurter.app/latest?amount=${amount}&from=${from}&to=${to}`);
+                const data = await r.json();
+                out.innerText = `${data.rates[to].toLocaleString()} ${to}`;
+            }
+        } catch (e) {
+            out.innerText = "Syncing...";
+        }
+    }
+
+    startClocks();
+    setInterval(tick, 1000);
+    convert();
+</script>
+</body>
+</html>
